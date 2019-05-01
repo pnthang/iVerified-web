@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../css/App.css';
-import AppNavFront from './AppNavFront';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -13,6 +12,14 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import { API_BASE_URL } from '../constants';
+import { IMG_BASE_URL } from '../constants';
+import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
+import Image from 'react-bootstrap/Image';
+import downArrow from '../images/down.svg';
+import Alert from 'react-bootstrap/Alert'
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 class Search extends Component {
   emptyItem = {    
@@ -39,7 +46,8 @@ class Search extends Component {
       item: this.emptyItem,
       blocks:[],
       sku:'',
-      show:'false'             
+      show:'false',
+      message:''             
     };    
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);  
@@ -60,18 +68,37 @@ class Search extends Component {
     if (sku) {
       fetch(`${API_BASE_URL}/product/sku/${sku}`)
         .then(response => response.json())
-        .then (product => {
+        .then (product => {            
             if (product.id){
                this.loadBlocks(product.id);
-            }
-            this.setState({
-              item: product,
-              show:'true'
-            });            
+               this.setState({
+                item: product,
+                show:'true',
+                message:''
+              });  
+            }else{
+                this.setState({
+                    item: this.emptyItem,
+                    blocks:[],
+                    show:'false',
+                    message:'Not Found product! Please try again'
+                });  
+            }                              
           }
         );       
     }
   }  
+  handleDetailClick() { 
+    confirmAlert({
+      title: 'Future works!',
+      message: 'This function will be update soon!',
+      buttons: [
+        {
+          label: 'Close' 
+        }         
+      ]
+    });           
+  }
 
   handleChange(event) {
     const target = event.target;
@@ -94,40 +121,51 @@ class Search extends Component {
   }
 
   render() {
-    const {item,blocks,show} = this.state;   
-    
+    const {item,blocks,show, message} = this.state;   
+    const alertMessage = message? <Alert variant='danger'>{message}</Alert> : '';
     let province="";
     let country="";
     if (item.id>0){
       province=item.city.province.name;
       country=item.city.province.country.name;
     }
-        
-    const blockList = blocks.map(block => {         
-      return <Card border="primary">
-              <Card.Img variant="top" 
-                    width={128}
-                    height={128}
-                    src={block.destination.logoImage} />
-              <Card.Body>
-                <Card.Title>{block.destination.name}</Card.Title>
-                <Card.Text>                             
-                  <Moment>
-                      {block.createdAt}
-                  </Moment>
-                </Card.Text>
-              </Card.Body>
-              <Card.Footer>
-                <small className="text-muted">
-                  hash: {block.hash}                  
-                </small>
-                <Button variant="info" size="sm">Learn more</Button>
-              </Card.Footer>
-            </Card>                  
+    let i=0;    
+    const blockList = blocks.map(block => {  
+      let logoUrl = `${IMG_BASE_URL}/${block.destination.logoImage}`;      
+      let imgUrl = `${IMG_BASE_URL}/${block.image}`;
+      let province="";
+      let country="";
+      if (block.id>0){
+        province=block.destination.city.province.name;
+        country=block.destination.city.province.country.name;
+      }  
+      let position='left';
+      if (i%2==0){
+        position='right';
+      } 
+      i++;              
+      return <VerticalTimeline>
+                <VerticalTimelineElement
+                    className="vertical-timeline-element--work"
+                    date={<Moment format="YYYY/MM/DD">{block.createdAt}</Moment>}                    
+                    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}                    
+                    position={position}
+                    icon={<downArrow/>}
+                >
+                    <Image src={imgUrl} thumbnail />
+                    <h3 className="vertical-timeline-element-title">{block.name}</h3>
+                    <h4 className="vertical-timeline-element-subtitle">{province}, {country}</h4>
+                    <p>
+                    {block.description}
+                    </p>
+                    <Button size="sm" variant="primary" name="learnMore" ref="learnMore" onClick={this.handleDetailClick}>Learn more</Button>
+                </VerticalTimelineElement>
+            </VerticalTimeline>         
     });
 
-    var productChain = ""
+    var productChain = ""    
     if (show==='true') {
+            let imgUrl = `${IMG_BASE_URL}/${item.thumbnailImages}` ;
             productChain = <div>                  
                   <Jumbotron fluid>
                     <Container>
@@ -138,7 +176,7 @@ class Search extends Component {
                           width={300}
                           height={250}
                           alt={item.name}
-                          src={item.thumbnailImages}
+                          src={imgUrl}
                         />
                         <Figure.Caption>
                         <p>{item.shortDescription}</p>
@@ -146,15 +184,15 @@ class Search extends Component {
                       </Figure>
                       <Form>
                       <Form.Group>
-                          <Button variant="primary" name="learnMore" ref="learnMore" onClick={this.handleClick}>Learn more</Button>{' '}
+                          <Button variant="primary" name="learnMore" ref="learnMore" onClick={this.handleDetailClick}>Learn more</Button>{' '}
                           <Button variant="secondary" name="close" ref="close" onClick={this.handleClick}>Close</Button>
                       </Form.Group>        
                     </Form>                       
                     </Container>          
-                  </Jumbotron> 
-                  <CardDeck>
-                    {blockList}          
-                  </CardDeck>           
+                  </Jumbotron>                                    
+                  <Container>
+                    {blockList} 
+                  </Container>                                                                         
             </div>;
     } ;    
                  
@@ -177,7 +215,8 @@ class Search extends Component {
                     <Button variant="outline-success" type="submit">Locate</Button>
                   </InputGroup.Append>
                 </InputGroup> 
-            </Form>          
+            </Form>    
+            {alertMessage}      
           </Card.Body>
           <Card.Footer className="text-muted">Grows, produces, manufactures, processes, packs, transports, holds, and sells </Card.Footer>
         </Card>

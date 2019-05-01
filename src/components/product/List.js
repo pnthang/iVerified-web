@@ -9,6 +9,9 @@ import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
 import { API_BASE_URL } from '../../constants';
+import { IMG_BASE_URL } from '../../constants';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 class List extends Component {
 
@@ -58,17 +61,32 @@ class List extends Component {
       });  
     }
 
-    async remove(id) {
-      await fetch(`${API_BASE_URL}/product/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        let updatedData = [...this.state.data].filter(i => i.id !== id);
-        this.setState({data: updatedData});
-      });
+    remove(id) { 
+      confirmAlert({
+        title: 'Confirm to Delete',
+        message: 'Are you sure to delete this.',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+              fetch(`${API_BASE_URL}/product/${id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              }).then(() => {
+                let updatedData = [...this.state.data].filter(i => i.id !== id);
+                this.setState({data: updatedData});
+              });
+            }
+          },
+          {
+            label: 'No',
+            //onClick: () => alert('Click No')
+          }
+        ]
+      });           
     }
 
     render() {
@@ -82,12 +100,14 @@ class List extends Component {
         if (sortDirection === 'DESC'){
           sortImage = downArrow;
         }
-        const list = data.map(item => {              
+        const list = data.map(item => { 
+            let thumbnailImagesUrl = `${IMG_BASE_URL}/${item.thumbnailImages}`;              
+            let qrCodeImageUrl = `${IMG_BASE_URL}/${item.qrCodeImage}`;              
             return <tr key={item.id}>
               <td style={{whiteSpace: 'nowrap'}}>{item.name}</td>        
               <td style={{whiteSpace: 'nowrap'}}>{item.sku}</td>      
-              <td style={{whiteSpace: 'nowrap'}}><Image src={item.thumbnailImages} thumbnail /></td>
-              <td style={{whiteSpace: 'nowrap'}}><Image src={item.qrCodeImage} thumbnail /></td>
+              <td style={{whiteSpace: 'nowrap'}}><Image src={thumbnailImagesUrl} thumbnail /></td>
+              <td style={{whiteSpace: 'nowrap'}}><Image src={qrCodeImageUrl} thumbnail /></td>
               <td>
                 <ButtonGroup>
                   <Button size="sm" variant="primary" href={"/product/" + item.id}>Edit</Button>

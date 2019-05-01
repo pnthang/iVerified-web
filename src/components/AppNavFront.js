@@ -32,7 +32,7 @@ export default class AppNavFront extends Component {
                 <Nav.Link exact href="#contact">Contact us</Nav.Link>        
               </Nav>            
             </Navbar.Collapse>
-          </Navbar>;
+          </Navbar>
           </div>               
       </div>
   }

@@ -10,8 +10,8 @@ class Home extends Component {
     return (
       <div >
         <AppNavFront/>         
-        <Slide/>
-        <Search/>                
+        <Search/>   
+        <Slide/>                     
         <Brand/>        
       </div>
     );

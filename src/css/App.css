@@ -68,3 +68,15 @@
   width:256px;
   height: 128px;
 }
+
+.block-right {
+  position: relative;
+  right:10%;
+  width:30%;
+}
+
+.block-left {
+  position: relative;
+  left:10%;
+  width:30%;
+}

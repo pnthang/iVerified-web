@@ -9,6 +9,7 @@ import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
 import { API_BASE_URL } from '../../constants';
+import { IMG_BASE_URL } from '../../constants';
 
 class List extends Component {
 
@@ -83,11 +84,12 @@ class List extends Component {
         if (sortDirection === 'DESC'){
           sortImage = downArrow;
         }
-        const list = data.map(item => {            
+        const list = data.map(item => { 
+          let imgUrl = `${IMG_BASE_URL}/${item.logoImage}`;            
             return <tr key={item.id}>
               <td style={{whiteSpace: 'nowrap'}}>{item.name}</td>        
               <td style={{whiteSpace: 'nowrap'}}>{item.email}</td>      
-              <td style={{whiteSpace: 'nowrap'}}><Image src={item.logoImage } thumbnail /></td>
+              <td style={{whiteSpace: 'nowrap'}}><Image src={imgUrl} thumbnail /></td>
               <td>
                 <ButtonGroup>
                   <Button size="sm" variant="primary" href={"/supplier/" + item.id}>Edit</Button>

@@ -9,6 +9,9 @@ import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { API_BASE_URL } from '../../constants';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+
 class List extends Component {
 
     constructor(props){
@@ -29,7 +32,7 @@ class List extends Component {
 
     loadData(){
       this.setState({isLoading:true});              
-      const url = `/api/cities?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
+      const url = `${API_BASE_URL}/cities?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -57,17 +60,33 @@ class List extends Component {
       });  
     }
 
-    async remove(id) {      
-      await fetch(`/api/city/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        let updatedData = [...this.state.data].filter(i => i.id !== id);
-        this.setState({data: updatedData});
-      });
+    remove(id) { 
+      confirmAlert({
+        title: 'Confirm to Delete',
+        message: 'Are you sure to delete this.',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+              fetch(`${API_BASE_URL}/city/${id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              }).then(() => {
+                let updatedData = [...this.state.data].filter(i => i.id !== id);
+                this.setState({data: updatedData});
+              });
+            }
+          },
+          {
+            label: 'No',
+            //onClick: () => alert('Click No')
+          }
+        ]
+      });     
+      
     }
 
     render() {

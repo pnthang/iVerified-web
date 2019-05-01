@@ -3,6 +3,7 @@ import '../css/App.css';
 import Card from 'react-bootstrap/Card';
 import CardColumns from 'react-bootstrap/CardColumns';
 import { API_BASE_URL } from '../constants';
+import { IMG_BASE_URL } from '../constants';
 
 class Brand extends Component {  
   constructor(props) {
@@ -27,12 +28,13 @@ class Brand extends Component {
 
   render() {
     const {vendors} = this.state;       
-    const vendorList = vendors.map(vendor => {         
+    const vendorList = vendors.map(vendor => { 
+      let imgUrl = `${IMG_BASE_URL}/${vendor.logoImage}`;        
       return <Card border="secondary">
               <Card.Img variant="top" 
                     width={128}
                     height={128}
-                    src={vendor.logoImage} />              
+                    src={imgUrl} />              
             </Card>                  
     });
 
