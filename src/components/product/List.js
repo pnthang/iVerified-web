@@ -8,7 +8,7 @@ import Image from 'react-bootstrap/Image';
 import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
-
+import { API_BASE_URL } from '../../constants';
 
 class List extends Component {
 
@@ -30,7 +30,7 @@ class List extends Component {
 
     loadData(){
       this.setState({isLoading:true});              
-      const url = `/api/products?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
+      const url = `${API_BASE_URL}/products?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -59,7 +59,7 @@ class List extends Component {
     }
 
     async remove(id) {
-      await fetch(`/api/product/${id}`, {
+      await fetch(`${API_BASE_URL}/product/${id}`, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',
@@ -73,7 +73,7 @@ class List extends Component {
 
     render() {
         const {data, isLoading, totalElements,page,size,sortDirection} = this.state;
-    
+        console.log();
         if (isLoading) {
           return <p>Loading...</p>;
         }
@@ -82,11 +82,12 @@ class List extends Component {
         if (sortDirection === 'DESC'){
           sortImage = downArrow;
         }
-        const list = data.map(item => {            
+        const list = data.map(item => {              
             return <tr key={item.id}>
               <td style={{whiteSpace: 'nowrap'}}>{item.name}</td>        
               <td style={{whiteSpace: 'nowrap'}}>{item.sku}</td>      
               <td style={{whiteSpace: 'nowrap'}}><Image src={item.thumbnailImages} thumbnail /></td>
+              <td style={{whiteSpace: 'nowrap'}}><Image src={item.qrCodeImage} thumbnail /></td>
               <td>
                 <ButtonGroup>
                   <Button size="sm" variant="primary" href={"/product/" + item.id}>Edit</Button>
@@ -111,12 +112,15 @@ class List extends Component {
                           Name
                           <img src={sortImage} className="arrow" onClick={this.handleSortChange}/>                          
                         </th>
-                        <th width="30%" >
+                        <th width="20%" >
                           SKU                          
                         </th>  
-                        <th width="30%" >
+                        <th width="20%" >
                           Image                          
-                        </th>                    
+                        </th>
+                        <th width="20%" >
+                          QR code                          
+                        </th>                     
                         <th width="10%">Actions</th>
                     </tr>
                   </thead>

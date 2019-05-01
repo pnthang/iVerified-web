@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
-
+import { API_BASE_URL } from '../../constants';
 
 class List extends Component {
 

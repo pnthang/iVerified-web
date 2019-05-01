@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 import AppNavbar from '../AppNavbar';
+import { API_BASE_URL } from '../../constants';
 
 class EditForm extends Component {
 
@@ -25,7 +26,7 @@ class EditForm extends Component {
     }
   
     async componentDidMount() {      
-      const url = `/api/countries?sort=name`;      
+      const url = `${API_BASE_URL}/countries?sort=name`;      
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -34,7 +35,7 @@ class EditForm extends Component {
       );
       
       if (this.props.match.params.id !== 'new') {
-        const data = await (await fetch(`/api/province/${this.props.match.params.id}`)).json();      
+        const data = await (await fetch(`${API_BASE_URL}/province/${this.props.match.params.id}`)).json();      
         this.setState({
           item: data
         });
@@ -62,7 +63,7 @@ class EditForm extends Component {
         const {item} = this.state;
         item.country= this.refs['country'].value;
 
-        await fetch('/api/province', {
+        await fetch(`${API_BASE_URL}/province`, {
           method: (item.id) ? 'PUT' : 'POST',
            headers: {
              'Accept': 'application/json',

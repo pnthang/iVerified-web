@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 import AppNavbar from '../AppNavbar';
+import { API_BASE_URL } from '../../constants';
 
 class EditForm extends Component {
 
@@ -38,7 +39,7 @@ class EditForm extends Component {
     }  
         
     loadCountry(){
-      const url = `/api/countries?sort=name`;             
+      const url = `${API_BASE_URL}/countries?sort=name`;             
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -49,7 +50,7 @@ class EditForm extends Component {
 
     loadProvince(countryId){
       if(countryId){
-        const url = `/api/country/${countryId}/provinces`;      
+        const url = `${API_BASE_URL}/country/${countryId}/provinces`;      
         fetch(url)
             .then(response => response.json())
             .then(data => this.setState({
@@ -62,7 +63,7 @@ class EditForm extends Component {
 
     loadCities(ProvinceId){
       if(ProvinceId){
-        const url = `/api/province/${ProvinceId}/cities`;  
+        const url = `${API_BASE_URL}/province/${ProvinceId}/cities`;  
         console.log(url);    
         fetch(url)
             .then(response => response.json())
@@ -75,10 +76,10 @@ class EditForm extends Component {
     async componentDidMount() {
       this.loadCountry();       
       if (this.props.match.params.id !== 'new') {
-        const data = await (await fetch(`/api/supplier/${this.props.match.params.id}`)).json();
+        const data = await (await fetch(`${API_BASE_URL}/supplier/${this.props.match.params.id}`)).json();
         Promise.all([
-          fetch(`/api/country/${data.city.province.country.id}/provinces`), 
-          fetch(`/api/province/${data.city.province.id}/cities`)
+          fetch(`${API_BASE_URL}/country/${data.city.province.country.id}/provinces`), 
+          fetch(`${API_BASE_URL}/province/${data.city.province.id}/cities`)
         ])
         .then(([provinces, cities]) => { 
           return Promise.all([provinces.json(), cities.json()]); 
@@ -122,7 +123,7 @@ class EditForm extends Component {
       form.append('uploadingFile',uploadingFile);
       console.log(uploadingFile);
       if(uploadingFile) {
-        fetch('/api/upload', {            
+        fetch(`${API_BASE_URL}/upload`, {            
             method: "POST",
             body: form,
           })
@@ -146,8 +147,9 @@ class EditForm extends Component {
         event.stopPropagation();
       }else{
         const {item} = this.state;   
-        item.city= this.refs['city'].value;             
-        await fetch('/api/supplier', {
+        item.city= this.refs['city'].value; 
+        console.log(item);            
+        await fetch(`${API_BASE_URL}/supplier`, {
           method: (item.id) ? 'PUT' : 'POST',
            headers: {
              'Accept': 'application/json',
@@ -161,7 +163,7 @@ class EditForm extends Component {
   
     render() {
       const {item,validated,countries,provinces,cities,countryId, provinceId } = this.state;      
-      
+      console.log(item);
       const countryList = countries.map(country => {        
         return <option  key={country.id} value={country.id} selected={country.id===countryId}>{country.name}</option>;   
       });

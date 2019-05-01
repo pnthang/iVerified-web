@@ -8,7 +8,7 @@ import Image from 'react-bootstrap/Image';
 import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
-
+import { API_BASE_URL } from '../../constants';
 
 class List extends Component {
 
@@ -30,7 +30,7 @@ class List extends Component {
 
     loadData(){
       this.setState({isLoading:true});              
-      const url = `/api/blocks?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
+      const url = `${API_BASE_URL}/blocks?size=${this.state.size}&page=${this.state.page}&sort=${this.state.sortProperty},${this.state.sortDirection}`;      
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -59,7 +59,7 @@ class List extends Component {
     }
 
     async remove(id) {
-      await fetch(`/api/block/${id}`, {
+      await fetch(`${API_BASE_URL}/block/${id}`, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',

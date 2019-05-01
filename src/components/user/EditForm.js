@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 import AppNavbar from '../AppNavbar';
+import { API_BASE_URL } from '../../constants';
 
 class EditForm extends Component {
 
@@ -33,7 +34,7 @@ class EditForm extends Component {
 
     async componentDidMount() {       
       if (this.props.match.params.id !== 'new') {
-        const data = await (await fetch(`/api/user/${this.props.match.params.id}`)).json();
+        const data = await (await fetch(`${API_BASE_URL}/user/${this.props.match.params.id}`)).json();
         this.setState({item: data});
         //localStorage.setItem('password', data ? data.password : '');
         //const user = rememberMe ? localStorage.getItem('user') : '';
@@ -57,7 +58,7 @@ class EditForm extends Component {
       form.append('uploadingFile',uploadingFile);
       console.log(uploadingFile);
       if(uploadingFile) {
-        fetch('/api/upload', {            
+        fetch(`${API_BASE_URL}/upload`, {            
             method: "POST",
             body: form,
           })
@@ -81,7 +82,7 @@ class EditForm extends Component {
         event.stopPropagation();
       }else{
         const {item} = this.state;                
-        await fetch('/api/user', {
+        await fetch(`${API_BASE_URL}/user`, {
           method: (item.id) ? 'PUT' : 'POST',
            headers: {
              'Accept': 'application/json',

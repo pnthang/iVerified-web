@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Moment from 'react-moment';
 import 'moment-timezone';
-
+import { API_BASE_URL } from '../constants';
 
 class View extends Component {
 

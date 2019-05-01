@@ -7,8 +7,8 @@ import Container from 'react-bootstrap/Container';
 import Pagination from "react-js-pagination";
 import upArrow from '../../images/up.svg';
 import downArrow from '../../images/down.svg';
-
-
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { API_BASE_URL } from '../../constants';
 class List extends Component {
 
     constructor(props){
@@ -57,7 +57,7 @@ class List extends Component {
       });  
     }
 
-    async remove(id) {
+    async remove(id) {      
       await fetch(`/api/city/${id}`, {
         method: 'DELETE',
         headers: {
@@ -89,7 +89,7 @@ class List extends Component {
               <td>
                 <ButtonGroup>
                   <Button size="sm" variant="primary" href={"/city/" + item.id}>Edit</Button>
-                  <Button size="sm" variant="danger" onClick={() => this.remove(item.id)}>Delete</Button>
+                  <Button size="sm" variant="danger" onClick={() => this.remove(item.id)}>Delete</Button>                  
                 </ButtonGroup>
               </td>
             </tr>

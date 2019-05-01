@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Admin from './Admin';
-import Home from './Home';
+import Main from './Main';
 import View from './View';
 
 import CountryList from './country/List';
@@ -36,6 +35,8 @@ import TransporterForm from './transporter/EditForm';
 
 import '../css/App.css';
 
+import Dashboard from './Dashboard';
+import Home from './Home';
 
 class App extends Component {
   render() {
@@ -43,8 +44,9 @@ class App extends Component {
          
       <Router>
         <Switch>
-          <Route path='/' exact={true} component={Home}/>
-          <Route path='/admin' exact={true} component={Admin}/>
+          <Route path='/' exact={true} component={Home}/>          
+          <Route path='/main' component={Main}/>          
+          <Route path='/admin' component={Dashboard}/>
           <Route path='/view/:hash' exact={true} component={View}/>
           
           <Route path='/countries' exact={true} component={CountryList}/>

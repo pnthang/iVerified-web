@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 import AppNavbar from '../AppNavbar';
+import { API_BASE_URL } from '../../constants';
 
 class EditForm extends Component {
 
@@ -36,7 +37,7 @@ class EditForm extends Component {
     }  
     
     loadProductCategories(){
-      const url = `/api/product-categories?sort=name`;             
+      const url = `${API_BASE_URL}/product-categories?sort=name`;             
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -46,7 +47,7 @@ class EditForm extends Component {
     }
 
     loadProducts(){
-      const url = `/api/products?sort=name`;             
+      const url = `${API_BASE_URL}/products?sort=name`;             
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -56,7 +57,7 @@ class EditForm extends Component {
     }
 
     loadVendors(){
-      const url = `/api/vendors?sort=name`;             
+      const url = `${API_BASE_URL}/vendors?sort=name`;             
       fetch(url)
           .then(response => response.json())
           .then(data => this.setState({
@@ -66,7 +67,7 @@ class EditForm extends Component {
     }
 
     loadBlocks(productId){      
-      const url = `/api/product/${productId}/blocks`; 
+      const url = `${API_BASE_URL}/product/${productId}/blocks`; 
       console.log(url);                      
       fetch(url)
           .then(response => response.json())
@@ -77,7 +78,7 @@ class EditForm extends Component {
     }
 
     async loadBlock(id){      
-      const url = `/api/block/${id}`; 
+      const url = `${API_BASE_URL}/block/${id}`; 
       const previousBlock = await (await fetch(url)).json();                        
       let item = {...this.state.item};
       if (previousBlock.id){
@@ -88,7 +89,7 @@ class EditForm extends Component {
     }
 
     async loadProduct(id){
-      const url = `/api/product/${id}`;             
+      const url = `${API_BASE_URL}/product/${id}`;             
       const product = await (await fetch(url)).json();  
       let item = {...this.state.item};
       if (product.id){
@@ -103,7 +104,7 @@ class EditForm extends Component {
       this.loadProducts(); 
       this.loadVendors();                                
       if (this.props.match.params.id !== 'new') {
-        fetch(`/api/block/${this.props.match.params.id}`)
+        fetch(`${API_BASE_URL}/block/${this.props.match.params.id}`)
           .then(response => response.json())
           .then(previousBlock => {
             if (previousBlock.product.id){              
@@ -140,7 +141,7 @@ class EditForm extends Component {
       form.append('uploadingFile',uploadingFile);
       console.log(uploadingFile);
       if(uploadingFile) {
-        fetch('/api/upload', {            
+        fetch(`${API_BASE_URL}/upload`, {            
             method: "POST",
             body: form,
           })
@@ -166,7 +167,7 @@ class EditForm extends Component {
         const {item} = this.state;
         //item.city= this.refs['city'].value;        
 
-        await fetch('/api/block', {
+        await fetch(`${API_BASE_URL}/block`, {
           method: (item.id) ? 'PUT' : 'POST',
            headers: {
              'Accept': 'application/json',

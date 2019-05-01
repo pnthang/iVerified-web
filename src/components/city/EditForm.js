@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 import AppNavbar from '../AppNavbar';
+import { API_BASE_URL } from '../../constants';
 
 class EditForm extends Component {
 
@@ -28,7 +29,7 @@ class EditForm extends Component {
 
     loadProvince(countryId){
       if(countryId){
-        const url = `/api/country/${countryId}/provinces`;      
+        const url = `${API_BASE_URL}/country/${countryId}/provinces`;      
         fetch(url)
             .then(response => response.json())
             .then(data => this.setState({
@@ -39,7 +40,7 @@ class EditForm extends Component {
     }
 
     loadCountry(){
-      const urlCountries = `/api/countries?sort=name`;             
+      const urlCountries = `${API_BASE_URL}/countries?sort=name`;             
       fetch(urlCountries)
           .then(response => response.json())
           .then(data => this.setState({
@@ -51,10 +52,10 @@ class EditForm extends Component {
     async componentDidMount() {                            
       this.loadCountry();
       if (this.props.match.params.id !== 'new') {
-        const city = await (await fetch(`/api/city/${this.props.match.params.id}`)).json();                                 
+        const city = await (await fetch(`${API_BASE_URL}/city/${this.props.match.params.id}`)).json();                                 
         //let item= city;
         //item.countryId = city.province.country.id;   
-        fetch(`/api/country/${city.province.country.id}/provinces`)
+        fetch(`${API_BASE_URL}/country/${city.province.country.id}/provinces`)
           .then(response => response.json())
           .then(data => this.setState({
             provinces:data.content,
@@ -91,7 +92,7 @@ class EditForm extends Component {
       }else{
         const {item} = this.state;
         item.province= this.refs['province'].value;        
-        await fetch('/api/city', {
+        await fetch(`${API_BASE_URL}/city`, {
           method: (item.id) ? 'PUT' : 'POST',
            headers: {
              'Accept': 'application/json',
